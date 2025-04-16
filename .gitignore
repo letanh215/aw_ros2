@@ -3,3 +3,4 @@ install
 log
 mcap
 rosbag*
+*.old.yaml

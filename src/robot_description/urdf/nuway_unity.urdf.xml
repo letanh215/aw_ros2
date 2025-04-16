@@ -117,12 +117,12 @@
     <joint name="base_to_lidar_velodyne_front" type="fixed">
         <parent link="base_link"/>
         <child link="lidar_velodyne_front"/>
-        <origin xyz="1.689 0 0.9" rpy="0 0.139626 0"/>
+        <origin xyz="1.689 0 0.9" rpy="0 0 0"/>
     </joint>
     <joint name="base_to_lidar_velodyne_rear" type="fixed">
         <parent link="base_link"/>
         <child link="lidar_velodyne_rear"/>
-        <origin xyz="-1.689 0 0.9" rpy="0 0.139626 3.14159"/>
+        <origin xyz="-1.689 0 0.9" rpy="0 0 3.14159"/>
     </joint>
 
     <joint name="base_to_lidar_localisation_front" type="fixed">
