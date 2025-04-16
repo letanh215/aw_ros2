@@ -1,0 +1,109 @@
+version: '2'
+services:
+  p2c_container:
+    image: ${IMAGE}:${TAG}
+    container_name: p2c
+    network_mode: host
+    build:
+      context: .
+      target: common
+    command: ros2 launch robot_description lidar_p2scan.launch.py
+    volumes:
+      - type: bind
+        source: /dev/shm
+        target: /dev/shm
+
+  controller_container:
+    image: ${IMAGE}:${TAG}
+    container_name: controller
+    network_mode: host
+    devices: [ "/dev/input/js0:/dev/input/js0" ]
+    build:
+      context: .
+      target: common
+    command: ros2 launch robot_description controller.launch.py
+    volumes:
+      - type: bind
+        source: /dev/shm
+        target: /dev/shm
+  
+  rviz_container:
+    image: ${IMAGE}:${TAG}
+    container_name: rviz_unity
+    network_mode: host
+    privileged: True # to allow forwarding of X11 display for rviz GUI
+    environment:
+      - DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - type: bind
+        source: /dev/shm
+        target: /dev/shm
+    # depends_on: ['p2c_container', 'controller_container', 'localization_container']
+    build:
+      context: .
+      target: common
+    # command: ros2 launch robot_description display2.launch.py
+    command: ros2 launch robot_description display.launch.py
+
+  rviz_container2:
+    image: ${IMAGE}:${TAG}
+    container_name: rviz_unity_2
+    network_mode: host
+    privileged: True # to allow forwarding of X11 display for rviz GUI
+    environment:
+      - DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - type: bind
+        source: /dev/shm
+        target: /dev/shm
+    # depends_on: ['p2c_container', 'controller_container', 'localization_container']
+    build:
+      context: .
+      target: common
+    command: ros2 launch robot_description display2.launch.py
+    # command: ros2 launch robot_description display.launch.py
+
+  navigation_container:
+    image: ${IMAGE}:${TAG}
+    container_name: navigation
+    network_mode: host
+    depends_on: ['p2c_container', 'controller_container', 'localization_container']
+    build:
+      context: .
+      target: common
+    command: ros2 launch ros_unity_navigation navigation.launch.py
+    volumes:
+      - type: bind
+        source: /dev/shm
+        target: /dev/shm
+
+  localization_container:
+    image: ${IMAGE}:${TAG}
+    container_name: robot_localization
+    network_mode: host
+    build:
+      context: .
+      target: common
+    command: ros2 launch ros_unity_localization robot_localization.launch.py
+    volumes:
+      - type: bind
+        source: /dev/shm
+        target: /dev/shm
+
+  slam_container:
+    image: ${IMAGE}:${TAG}
+    container_name: slam
+    network_mode: host
+    environment:
+      - DISPLAY
+    depends_on: ['p2c_container', 'controller_container', 'localization_container']
+    build:
+      context: .
+      target: common
+    command: ros2 launch ros_unity_navigation slam.launch.py
+    volumes:
+      - type: bind
+        source: /dev/shm
+        target: /dev/shm
