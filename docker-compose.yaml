@@ -16,6 +16,7 @@ services:
       - QT_X11_NO_MITSHM=1
       - XAUTHORITY=/tmp/.X11-unix
     command: ros2 launch robot_description display2.launch.py
+    #command: ros2 launch robot_description controller.launch.py
     tty: true
     stdin_open: true
 

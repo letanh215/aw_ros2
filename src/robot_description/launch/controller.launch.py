@@ -24,9 +24,9 @@ def generate_launch_description():
                 package="teleop_twist_joy",
                 executable="teleop_node",
                 name="teleop_twist_joy_node",
-                # remappings=[
-                #     ('/cmd_vel', '/joy_cmd_vel')
-                # ],
+                remappings=[
+                    ('/cmd_vel', '/joy_cmd_vel')
+                ],
                 parameters=[
                     os.path.join(
                         get_package_share_directory("robot_description"), "config/controller.yaml"
@@ -35,7 +35,7 @@ def generate_launch_description():
             ),
             Node(
                 package="ros_unity_controller",
-                executable="simple_converter"
+                executable="control_node"
             )
         ]
     )
